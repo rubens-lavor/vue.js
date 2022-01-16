@@ -1,44 +1,63 @@
-<!-- alurapic/src/App.vue -->
-
 <template>
+  <div class="corpo">
+    <h1 class="centralizado">{{ titulo }}</h1>
 
-  <div>
-    <h1>{{ titulo }}</h1>
-
-    <ul>
-
-        <li v-for="(foto, index) of fotos" :key="index">
-          <img :src="foto.url" :alt="foto.titulo">
-        </li>
-
+    <ul class="lista-fotos">
+      <li class="lista-fotos-item" v-for="foto in fotos" :key="foto">
+        <meu-painel :titulo="foto.titulo">
+          <img class="imagem-responsiva" :src="foto.url" :alt="foto.titulo" />
+        </meu-painel>
+      </li>
     </ul>
-
   </div>
-
 </template>
 
 <script>
 
-export default {
+import Painel from './components/shared/painel/Painel.vue';
 
+export default {
+  components: {
+    'meu-painel': Painel
+  },
   data() {
     return {
-      titulo: 'Alurapic',
-      fotos: [
-        {
-          url: 'https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcTwV4kVzT5McBdGSgqlVeRzubrNH_mOrrkKseDOGFURq20HmsrelEfMU7It',
-          titulo: 'Cachorro'
-        },
-        {
-          url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTOhmlmzV4-Sifx5BIc2SXeA-1CtZJf8jb8V_vPZyKbXIQJKU-rkxGO6OM',
-          titulo: 'Gato'
-        }
-      ]
-
-    }
-  }
-}
+      titulo: "Alurapic",
+      fotos: [],
+    };
+  },
+  created() {
+    this.$http
+      .get("http://localhost:3000/v1/fotos")
+      .then((res) => res.json())
+      .then(
+        (fotos) => (this.fotos = fotos),
+        (err) => console.log(err)
+      );
+  },
+};
 </script>
 
 <style>
+.centralizado {
+  text-align: center;
+}
+
+.corpo {
+  font-family: Helvetica, sans-serif;
+  margin: 0 auto;
+  width: 96%;
+}
+
+.lista-fotos {
+  list-style: none;
+}
+
+.lista-fotos .lista-fotos-item {
+  display: inline-block;
+}
+
+.imagem-responsiva {
+  width: 100%;
+}
 </style>
