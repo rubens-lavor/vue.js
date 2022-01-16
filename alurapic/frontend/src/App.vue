@@ -7,7 +7,7 @@
 
     <ul>
 
-        <li v-for="foto of fotos" :key="foto">
+        <li v-for="(foto, index) of fotos" :key="index">
           <img :src="foto.url" :alt="foto.titulo">
         </li>
 
