@@ -2,8 +2,19 @@
   <div class="corpo">
     <h1 class="centralizado">{{ titulo }}</h1>
 
+    <input
+      type="search"
+      class="filtro"
+      v-on:input="filtro = $event.target.value"
+      placeholder="filtre pelo título da foto"
+    />
+
     <ul class="lista-fotos">
-      <li class="lista-fotos-item" v-for="foto in fotos" :key="foto">
+      <li
+        class="lista-fotos-item"
+        v-for="(foto, index) of fotosComFiltro"
+        :key="index"
+      >
         <meu-painel :titulo="foto.titulo">
           <img class="imagem-responsiva" :src="foto.url" :alt="foto.titulo" />
         </meu-painel>
@@ -13,19 +24,34 @@
 </template>
 
 <script>
-
-import Painel from './components/shared/painel/Painel.vue';
+import Painel from "./components/shared/painel/Painel.vue";
 
 export default {
   components: {
-    'meu-painel': Painel
+    "meu-painel": Painel,
   },
+
   data() {
     return {
       titulo: "Alurapic",
+
       fotos: [],
+
+      filtro: "",
     };
   },
+
+  computed: {
+    fotosComFiltro() {
+      if (this.filtro) {
+        let exp = new RegExp(this.filtro.trim(), "i");
+        return this.fotos.filter((foto) => exp.test(foto.titulo));
+      } else {
+        return this.fotos;
+      }
+    },
+  },
+
   created() {
     this.$http
       .get("http://localhost:3000/v1/fotos")
@@ -37,7 +63,6 @@ export default {
   },
 };
 </script>
-
 <style>
 .centralizado {
   text-align: center;
@@ -58,6 +83,11 @@ export default {
 }
 
 .imagem-responsiva {
+  width: 100%;
+}
+
+.filtro {
+  display: block;
   width: 100%;
 }
 </style>
